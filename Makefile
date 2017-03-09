@@ -16,6 +16,8 @@ ifeq ($(strip $(MP)),1)
 CFLAGS_common += -fopenmp -DMP
 endif
 EXEC = iteration binary byte recursive harley 
+RANGEDOWN=0
+RANGEUP=10000
 
 GIT_HOOKS := .git/hooks/pre-commit
 .PHONY: all
@@ -54,6 +56,14 @@ run: $(EXEC)
 	taskset -c 1 ./byte 67100000 67116384
 	taskset -c 1 ./recursive 67100000 67116384
 	taskset -c 1 ./harley 67100000 67116384
+
+runn: $(EXEC)
+	taskset -c 1 ./iteration $(RANGEDOWN) $(RANGEUP)
+	taskset -c 1 ./binary $(RANGEDOWN) $(RANGEUP)
+	taskset -c 1 ./byte $(RANGEDOWN) $(RANGEUP)
+	taskset -c 1 ./recursive $(RANGEDOWN) $(RANGEUP)
+	taskset -c 1 ./harley $(RANGEDOWN) $(RANGEUP)
+	
 
 plot: iteration.txt iteration.txt binary.txt byte.txt harley.txt
 	gnuplot scripts/runtime.gp
